@@ -6,17 +6,25 @@ class Book:
         self.year = year
         self.pages = pages
         self.genre = genre
-        self.__is_read = is_read
+        self.__is_read = False
         self.rating = None
-        self.reviews = reviews
+        self.reviews = []
 
-    def change_read_status(self):
-        if self.__is_read == True:
-            self.__is_read = False
-        else: 
-            self.__is_read == True
+
+    @property
+    def id(self):
+        return self.__id
+    
+    @property
+    def is_read(self):
+        return self.__is_read
+    
+    def mark_as_read(self):
+        self.__is_read = True
 
     def add_review(self, rating, review):
+        if not self.is_read:
+            raise ValueError("Нельзя оставить отзыв к непрочитанной книге!")
         if self.rating == None:
             self.rating = [rating]
         else:
@@ -27,15 +35,25 @@ class Book:
             self.reviews.append(review)
 
     def __str__(self):
-        print("Информация о книге:\n")
-        print("="*max(len(f"Название: {self.title}"),len(f"Автор: {self.author}"),len(f"Год выпуска: {self.year}"),len(f"Количество страниц: {self.pages}"),len(f"Жанр: {self.genre}"),len("Статус: не прочитана")))
-        print(f"Название: {self.title}")
-        print(f"Автор: {self.author}")
-        print(f"Год выпуска: {self.year}")
-        print(f"Количество страниц: {self.pages}")
-        print(f"Жанр: {self.genre}")
-        if self.__is_read:
-            print("Статус: прочитана")
-        else:
-            print("Статус: не прочитана")
+
+        status = "Прочитана✅" if self.is_read else "Не прочитана❌"
+        avg_rating = sum(self.rating)/len(self.rating)
+        str_reviews = ''
+        for review in range(len(self.reviews)):
+            str_reviews += f"   {review+1}. (Rating: {self.rating[review]}) {self.reviews[review]}\n\n"
+
+        return f"""
+    Информация о книге:
+
+        Название: {self.title}"
+        Автор: {self.author}
+        Год выпуска: {self.year}
+        Количество страниц: {self.pages}
+        Жанр: {self.genre}"
+        Статус: {status}
+        Средний рейтинг: {avg_rating}
+        
+        Отзывы:
+            {str_reviews}
+        """
         
